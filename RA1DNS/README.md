@@ -4,7 +4,7 @@
 
 En aquesta documentació trobarem informació sobre la configuració dels serveis DNS de l’empresa Hospital d’Inca.
 Disseny dels serveis DNS.
-Els dos noms de domini de l’empresa son:
+Els dos noms de domini de l’empresa són:
 
 hospitalbinissalem.com
 quirofans.com 
@@ -40,7 +40,7 @@ número de sèrie 2008052001 |
 |Nom de domini | Tipus de registres | Valor
 |-------------|-----------|-------|
 |158.18.10.in-addr.apra | SOA | Master de domini: admin@jservers.com DNS primari: ns01.hospitalbinissalem.com número de sèrie 2008052001 … |
-|158..18.10.in-addr.apra | NS | ns01.hospitalbinissalem.com |
+|158.18.10.in-addr.apra | NS | ns01.hospitalbinissalem.com |
 
 
 ### Requeriments zona quirofans.com
