@@ -222,13 +222,14 @@
     const markdownFiles = [
       "GuiaGitGithub.md",
       "GuiaCollaboracioGit.md",
-      "GuiaVisualStudioCodeAmbGitiGitHub.md"
+      "GuiaVisualStudioCodeAmbGitiGitHub.md",
+      "../README.md"
     ];
   
     const requestedFile = new URLSearchParams(window.location.search).get("md");
     const selectedFile = markdownFiles.includes(requestedFile)
       ? requestedFile
-      : markdownFiles[0];
+      : "GuiaGitGithub.md";
   
     document
       .querySelector("#presentation-markdown")
