@@ -1,6 +1,32 @@
 # Guia de col·laboració amb Git
 
-Aquesta guia descriu el flux recomanat per treballar en el repositori `wiki2526`. Està pensada per a un equip de 15 persones i per reduir conflictes i errors accidentals.
+Aquesta guia descriu el flux recomanat per treballar en el repositori amb Git. Està pensada per a un equip de persones i per reduir conflictes i errors accidentals.
+
+note:
+- [Guia de col·laboració amb Git](#guia-de-collaboració-amb-git)
+  - [Regles bàsiques](#regles-bàsiques)
+  - [Configuració inicial](#configuració-inicial)
+  - [Flux de treball recomanat](#flux-de-treball-recomanat)
+    - [1. Actualitzar `main`](#1-actualitzar-main)
+    - [2. Crear una branca](#2-crear-una-branca)
+    - [3. Revisar els canvis](#3-revisar-els-canvis)
+    - [4. Fer un commit](#4-fer-un-commit)
+    - [5. Pujar la branca](#5-pujar-la-branca)
+    - [6. Crear una Pull Request](#6-crear-una-pull-request)
+  - [Integrar i publicar els canvis](#integrar-i-publicar-els-canvis)
+    - [Qui fa cada acció?](#qui-fa-cada-acció)
+    - [Merge des de la línia d’ordres](#merge-des-de-la-línia-dordres)
+  - [Abans d’aprovar o fer merge](#abans-daprovar-o-fer-merge)
+  - [Si hi ha conflictes](#si-hi-ha-conflictes)
+  - [Errors habituals](#errors-habituals)
+    - [He modificat `main` localment sense voler](#he-modificat-main-localment-sense-voler)
+    - [He fet un commit, però encara no l’he pujat](#he-fet-un-commit-però-encara-no-lhe-pujat)
+    - [He fet `push` d’un fitxer sensible](#he-fet-push-dun-fitxer-sensible)
+  - [Comandes de consulta segura](#comandes-de-consulta-segura)
+  - [Resum ràpid](#resum-ràpid)
+
+
+---
 
 ## Regles bàsiques
 
@@ -11,6 +37,8 @@ Aquesta guia descriu el flux recomanat per treballar en el repositori `wiki2526`
 - No pugeu contrasenyes, claus, certificats privats ni fitxers temporals.
 - No modifiqueu el treball d’una altra persona sense parlar-ho abans.
 
+---
+
 ## Configuració inicial
 
 Només cal fer-ho una vegada:
@@ -19,14 +47,40 @@ Només cal fer-ho una vegada:
 git config --global user.name "El vostre nom"
 git config --global user.email "el.vostre.email@example.com"
 git clone URL_DEL_REPOSITORI
-cd wiki2526
+cd REPOSITORI
 ```
 
 Utilitzeu una clau SSH o un gestor de credencials. No escriviu contrasenyes dins de les ordres ni dels fitxers del projecte.
 
+---
+
 ## Flux de treball recomanat
 
+```mermaid
+%%{init: {"flowchart": {"nodeSpacing": 12, "rankSpacing": 16}, "themeVariables": {"fontSize": "16px"}}}%%
+flowchart LR
+    A["Clonar </br>Repositori local"] --> B["Actualitzar </br> main_local"]
+    B --> C["Crear branca </br> NOVA TASCA"]
+    C --> D["Editar i revisar</br>branca_local"]
+    D --> E{"main_remot<br/>té canvis?"}
+    E -->|No| G["Commit i push</br>branca_remota"]
+    E -->|Sí| F["Incorporar a la </br>branca_local</br> main_remot"]
+    F --> D
+    G --> H["Crear </BR>PULL REQUEST"]
+    H --> I{"PULL REQUEST </BR> aprovat?"}
+    I -->|No| D
+    I -->|Sí| J["Merge a</BR>main_remot"]
+    J --> B
+```
+* Existeix un repositori en remot GitHub i un repositori en local.
+* Els dos repositoris poden contenir tot l'historia de canvis, commits i branques.
+* És responsabilitat de l'usuari mantenir les actualitzacions.
+
+---
+
+
 ### 1. Actualitzar `main`
+</br>
 
 Abans de crear una branca:
 
@@ -36,6 +90,14 @@ git pull --ff-only origin main
 ```
 
 Si `git pull --ff-only` dona un error, no forceu l’operació. Demaneu ajuda abans de continuar.
+
+---v
+
+A **VS code** s'ha de vigilar que la branca **main** no tingui sincronitzacions pendents.
+
+![Actualitzar main](img/actualitzar_main.png)
+
+---
 
 ### 2. Crear una branca
 
@@ -51,6 +113,14 @@ Formats recomanats:
 - `fix/descripcio` per corregir un error.
 - `feat/descripcio` per afegir contingut o funcionalitat.
 
+---v
+
+A ***VS code*** s'ha de vigilar de crear la branca a partir de **main**.
+
+![Crear branca](img/crear_branca.png)
+
+---
+
 ### 3. Revisar els canvis
 
 ```bash
@@ -59,6 +129,13 @@ git diff
 ```
 
 Comproveu que només hi hagi els fitxers que realment voleu modificar.
+
+---v
+
+A ***VS code*** s'ha de revisar que **Changes** hi hagi els fitxers que s'han modificat
+![Revisar canvis](img/revisar_canvis.png)
+
+---
 
 ### 4. Fer un commit
 
@@ -73,21 +150,51 @@ Un bon missatge explica l’acció realitzada. Exemples:
 - `docs: corregeix els enllaços del grup 5`.
 - `fix: corregeix el nom d’un fitxer`.
 
+---v
+
+És important abans de fer el commit vigilar que no hi hagi sincronitzacions pendents. Comprovar quins són els fitxers i carpetes que es volen canviar. 
+Al final simplement posar un bon missatge, vigilar la branca activa i pitjar el botó de **Commit**.
+![commit](img/commit.png)
+
+---v
+
+Abans de fer el commit una bona política seria agafar els possibles canvis recents del main i incorporar-los a la branca.
+
+```bash
+git switch main
+git pull --ff-only origin main
+```
+A **VS Code** simplement s'ha de fer un **pull from**
+![commit](img/pull_from1.png)
+
+---
+
 ### 5. Pujar la branca
+</br>
 
 ```bash
 git push -u origin docs/grup-03-dns
 ```
 
-La primera ordre associa la branca local amb la remota. En les actualitzacions següents normalment n’hi ha prou amb:
+La primera ordre associa la branca local amb la remota. 
+
+En les actualitzacions següents normalment n’hi ha prou amb:
 
 ```bash
 git push
 ```
 
+---v
+
+A ***VS code*** s'ha de revisar de fer el push a la branca adeauada
+
+![Push branca](img/push_branca.png)
+
+---
+
 ### 6. Crear una Pull Request
 
-A la plataforma del repositori:
+A la plataforma del repositori a **GitHub**:
 
 1. Creeu una Pull Request des de la vostra branca cap a `main`.
 2. Poseu un títol clar i breu.
@@ -97,6 +204,22 @@ A la plataforma del repositori:
 6. Espereu l’aprovació i les comprovacions automàtiques abans de fer el merge.
 
 No feu merge de la vostra pròpia Pull Request si el projecte exigeix revisió d’una altra persona.
+
+---v
+
+S'ha de fer el **New Pull Request**
+
+![pull request](img/pull_request_1.png)
+
+---v
+
+S'ha de fer el **Pull Request** de la branca desitjada
+
+![pull request](img/pull_request_2.png)
+
+Al final s'han de seguir les instruccions per poder integrar els canvis.
+
+---
 
 ## Integrar i publicar els canvis
 
@@ -121,6 +244,8 @@ Els canvis integrats ja són visibles per a tothom que actualitzi el repositori.
 No cal fer un segon `push` a `main`: el merge de la Pull Request ja ha publicat
 els canvis al repositori remot.
 
+---
+
 ### Qui fa cada acció?
 
 | Acció | Persona responsable |
@@ -129,6 +254,8 @@ els canvis al repositori remot.
 | Revisar la Pull Request | Una altra persona de l’equip |
 | Fer el merge a `main` | Responsable autoritzat del repositori |
 | Actualitzar la còpia local | Cada col·laborador |
+
+---
 
 ### Merge des de la línia d’ordres
 
@@ -145,6 +272,18 @@ git push origin main
 En un equip amb poca experiència és preferible fer el merge amb el botó de la
 Pull Request, perquè la plataforma mostra les aprovacions, els conflictes i les
 comprovacions abans de publicar el canvi.
+
+---v
+
+Una vegada s'ha pujat la branca i seleccionat de quina branca es vol fer el pull request s'ha de crear 
+![Actualitzar main](img/pull_request_3.png)
+
+---v
+
+Una vegada resolt els conflictes es fa el **Merge pull request**
+![Actualitzar main](img/pull_request_4.png)
+
+---
 
 ## Abans d’aprovar o fer merge
 
@@ -164,6 +303,8 @@ Es recomana activar a `main`:
 - comprovacions automàtiques obligatòries;
 - bloqueig del `push` directe;
 - bloqueig del `force push`.
+
+---
 
 ## Si hi ha conflictes
 
@@ -185,6 +326,8 @@ git push
 
 Si no sabeu quina versió conservar, atureu-vos i demaneu revisió a la persona responsable del fitxer.
 
+---
+
 ## Errors habituals
 
 ### He modificat `main` localment sense voler
@@ -198,6 +341,8 @@ git commit -m "docs: recupera canvis locals"
 git push -u origin docs/canvis-recuperats
 ```
 
+---
+
 ### He fet un commit, però encara no l’he pujat
 
 Reviseu-lo i pugeu-lo:
@@ -207,9 +352,13 @@ git show --stat
 git push
 ```
 
+---
+
 ### He fet `push` d’un fitxer sensible
 
 No el considereu resolt només esborrant-lo en un commit posterior. Aviseu immediatament la persona responsable, revoqueu o canvieu la credencial exposada i elimineu-la de l’historial amb ajuda experta.
+
+---
 
 ## Comandes de consulta segura
 
@@ -220,6 +369,8 @@ git log --oneline -5       # darrers commits
 git diff                   # canvis encara no preparats
 git diff --staged          # canvis preparats per al commit
 ```
+
+---
 
 ## Resum ràpid
 

@@ -30,24 +30,29 @@ Es suposa que cada un dels serveis s'implementarà amb una serie de servidors, a
 
 ## Guia col·laboració del git
 
-[Guia de col·laboració del git](GUIA-COL·LABORACIO-GIT.md)
+[Guia de Git i Github](GitGithub/GuiaGitGithub.md)
+
+[Guia de col·laboració del git](GitGithub/GuiaCollaboracioGit.md)
+
+[Guia Visual Studio Code amb Git i GitHub](GitGithub/GuiaVisualStudioCodeAmbGitiGitHub.md)
 
 ### Flux de treball gràfic
 
 ```mermaid
-flowchart TD
-	A[Clonar el repositori] --> B[Actualitzar main]
-	B --> C[Crear una branca pròpia]
-	C --> D[Editar els fitxers]
-	D --> E[Revisar els canvis]
-	E --> F[Fer commit]
-	F --> G[Pujar la branca amb push]
-	G --> H[Crear una Pull Request]
-	H --> I{Revisió aprovada?}
-	I -- No --> D
-	I -- Sí --> J[Fer merge a main]
-	J --> K[Actualitzar la còpia local]
-	K --> B
+%%{init: {"flowchart": {"nodeSpacing": 12, "rankSpacing": 16}, "themeVariables": {"fontSize": "16px"}}}%%
+flowchart LR
+    A["Clonar </br>Repositori local"] --> B["Actualitzar </br> main_local"]
+    B --> C["Crear branca </br> NOVA TASCA"]
+    C --> D["Editar i revisar</br>branca_local"]
+    D --> E{"main_remot<br/>té canvis?"}
+    E -->|No| G["Commit i push</br>branca_remota"]
+    E -->|Sí| F["Incorporar a la </br>branca_local</br> main_remot"]
+    F --> D
+    G --> H["Crear </BR>PULL REQUEST"]
+    H --> I{"PULL REQUEST </BR> aprovat?"}
+    I -->|No| D
+    I -->|Sí| J["Merge a</BR>main_remot"]
+    J --> B
 ```
 
 ### Resum del flux de treball
